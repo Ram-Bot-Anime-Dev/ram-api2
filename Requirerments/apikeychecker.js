@@ -1,56 +1,38 @@
 
 const prokeys = require("./Scemas/apikeys");
+let jsonwebtoken = require("jsonwebtoken");
 
+function checkToken(req) {
+    return new Promise((resolve, reject) => {
+        if (req.headers && req.headers.authorization) {
+            const authHeader = req.headers['authorization'];
+            const token = authHeader && authHeader.split(' ')[1]
+            let authorization = req.headers.authorization
+            let decoded
+            try {
+                decoded = jsonwebtoken.verify(token, process.env.se);
+            } catch (e) {
+                reject("Token not valid");
+            }
+            let userId = decoded.id
+            prokeys.User.findOne({ _id: userId }).then(user => {
+                resolve(user)
+            }).catch(err => {
+                reject("Token error")
+            })
+        } else {
+            reject("No token found")
+        }
+    })
+}
 
-const validateToken = async (req, res, next) => {
-    //Where is the API key expected to be?
-    let host = req.headers.origin;
+function authenticateToken(req, res, next) {
+    checkToken(req).then(user => {
+        next()
+    }).catch(err => {
+        console.log(err)
+        res.sendStatus(403);
+    })
+}
 
-    //let api_key = req.query.api_key; //version 1 with the querystring
-    //let api_key = req.params.apikey; //version 2 with the URL params
-    let api_key = req.header("token"); //version 3 using a header
-    //version 3 using a header
-    if (!api_key)
-        return res.status(403).send({
-            error: {
-                code: 403,
-                message:
-                    "You Must provide the token (api-key) to get one join https://discord.gg/s5SmhGYTSZ and request one in #request-a-key",
-            },
-        });
-
-    const data = await prokeys.findOne({ _id: api_key });
-
-
-
-    // find() returns an object or undefined
-    if (data) {
-        let account = {
-            email: data.email,
-            api_key: data._id,
-        };
-        let key2 = account.api_key;
-        if (key2 !== api_key)
-            return res.status(403).send({
-                error: {
-                    code: 403,
-                    message:
-                        "You Must provide the token (api-key) to get one join https://discord.gg/s5SmhGYTSZ and request one in #request-a-key",
-                },
-            });
-
-        next();
-
-    } else {
-        //stop and respond
-        res.status(403).send({
-            error: {
-                code: 403,
-                message:
-                    "You Must provide the token (api-key) to get one join https://discord.gg/s5SmhGYTSZ and request one in #request-a-key",
-            },
-        });
-    }
-};
-
-module.exports = validateToken;
+module.exports = authenticateToken;
