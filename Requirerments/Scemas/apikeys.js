@@ -1,8 +1,17 @@
 const mongoose = require("mongoose");
 
 const ModLogSchema = new mongoose.Schema({
-    email: String,
-    _id: String,
-});
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+        lowercase: true,
+        trim: true,
+    },
+    password: {
+        type: String,
+        required: true
+    }
+}, { collation: "users" })
 
-module.exports = mongoose.model("api_keys_pro", ModLogSchema);
+exports.User = mongoose.model("Users", ModLogSchema);
