@@ -1,6 +1,7 @@
 require("dotenv").config(); // calls the .env file
 const CryptoJS = require('crypto-js');
 var path = require('path');
+var { expressjwt: jwt } = require("express-jwt");
 
 const express = require('express');
 var favicon = require('serve-favicon');
@@ -15,6 +16,9 @@ const session = require('express-session');
 const ms = require('ms');
 const Logs = require("../Requirerments/logger");
 const Store = require('connect-mongo')(session);
+const MemeryStore = require('express-rate-limit/lib/memory-store');
+const validateToken = require("../Requirerments/apikeychecker");
+const { versions } = require("../Requirerments/version");
 
 var app = express();
 app.use(favicon(path.join(__dirname, "assets", "favicon.png")))
@@ -27,22 +31,41 @@ mongoose.connect(process.env.mongodb, {
 
 const swaggerOptions = {
     swaggerDefinition: {
+
+
+        openapi: '3.0.1', // YOU NEED THIS
         info: {
             version: "v1",
             title: 'Ram Api 2',
             head: "Gamearoo",
-            description: "Like Ram Api But Better",
-            swagger: "2.0",
+            description: `Like Ram Api But Better \n Versions: ${versions.map(v => v).join(", ")}`,
+
             toolbar: true,
+            basePath: '/',
             contact: {
                 name: 'Support Team',
                 email: 'support@rambot.xyz',
             },
-            servers: ["http://localhost", "https://api2.rambot.xyz"],
+
         },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                }
+            }
+        },
+
+
+
+
+
+
     },
     apis: [`${__dirname}/routes/**/*.js`],
-};
+}
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 const { cssdark } = require("./darkcss");
@@ -59,16 +82,15 @@ const port = "2023"; //used so the reverse proxy can communicate with the api
 
 const routes = require('./routes');
 
-const MemeryStore = require('express-rate-limit/lib/memory-store');
-const validateToken = require("../Requirerments/apikeychecker");
+
 
 const limiter = ratelimit({
-    windowMS: 2 * 1000, // 2 seconds\
-    max: 30, // 30 requests
+    windowMS: 5 * 1000, // 2 seconds\
+    max: 10, // 30 requests
     standardHeaders: true,
     legacyHeaders: false,
     message: {
-        Too_many_requests: "Please try again later. Its 30 requests per 2 Seconds",
+        Too_many_requests: "Please try again later. Its 10 requests per 5 Seconds",
         RATELIMITERROR: "Rate Limit Error",
         RETRY_AFTER: "Retry-After: 9S",
         error: {
@@ -98,7 +120,6 @@ app.use(function (req, res, next) {
 app.use(bodyParser.json()); // if i remember right this is how ram-api shows json objects not 100% sure what it does tho been a while
 
 app.use("/", limiter);
-app.use("/", validateToken);
 app.use("/", routes);
 
 app.get("*", function (req, res) {
@@ -107,7 +128,7 @@ app.get("*", function (req, res) {
     })
 })
 
-app.liston(port, () => new Logs().info('running on port 80'))
+app.listen(port, () => new Logs().info('running on port 80'))
 
 
 
