@@ -45,8 +45,8 @@ router.post("/signup", async (req, res) => {
         email,
         password: bcrypt.hashSync(password, 10),
     }).then((user) => {
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "259200s" });
-        res.json({ success: true, token, expires: "In 3 Days" });
+        const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "30d" });
+        res.json({ success: true, token, Notice: "Token expire after 30 days!" });
     }).catch(err => {
         res.json({ success: false, error: err });
     })
@@ -96,8 +96,8 @@ router.post("/login", async (req, res) => {
             if (!bcrypt.compareSync(password, user.password)) {
                 res.json({ success: false, error: 'wrong password' });
             } else {
-                const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "3D" });
-                res.json({ success: true, token, expires: "In 3 Days" });
+                const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "30d" });
+                res.json({ success: true, token, Notice: "Token expire after 30 days!" });
             }
         }
     }).catch(err => {
