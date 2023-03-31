@@ -1,4 +1,4 @@
-const helloGet = require("../../../Requirerments/functions/helloGet");
+const helloGet = require("../../../Requirerments/functions/Hello/helloGet");
 const { latest, versions } = require("../../../Requirerments/version");
 
 const router = require("express").Router();

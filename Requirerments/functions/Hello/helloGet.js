@@ -1,4 +1,4 @@
-const { outdated } = require("../version");
+const { outdated } = require("../../version");
 const { request, response } = require('express');
 
 /**
