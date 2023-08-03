@@ -19,18 +19,18 @@ async function helloGet(version, req, res) {
     //! newer updates will contain the same code just new items in each array
 
     switch (version) { // uses the proper version
-        case "1": {
+        case "1": 
             let textupdateArray = [
-                `Hello`,
-                `Hi`,
-                "Hi, How are you?",
-                "Hello, How are you?",
+                `Wishing you the best birthday ever!`,
+                `Wishing you the best birthday ever!`,
+                `Happy Birthday, Hope your birthday is amazing!`,
+                "Happy Birthday!",
             ];
             let imageupdateArray = [
-                "http://rambot.xyz/ram-api2-images/hello/hello1.gif",
-                "http://rambot.xyz/ram-api2-images/hello/hello2.gif",
-                "http://rambot.xyz/ram-api2-images/hello/hello3.gif",
-                "http://rambot.xyz/ram-api2-images/hello/hello4.gif"
+                "https://rambot.xyz/ram-api2-images/bday/bday1.gif",
+                "https://rambot.xyz/ram-api2-images/bday/bday2.gif",
+                "https://rambot.xyz/ram-api2-images/bday/bday3.gif",
+                "https://rambot.xyz/ram-api2-images/bday/bday4.gif"
 
             ];
 
@@ -42,7 +42,7 @@ async function helloGet(version, req, res) {
                 imagearray.push(item);
             })
 
-        }
+        break;
     }
     const index = Math.floor(Math.random() * (textarray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
     const index2 = Math.floor(Math.random() * (imagearray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).

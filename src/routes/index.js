@@ -4,6 +4,8 @@ const authenticateToken = require("../../Requirerments/apikeychecker");
 
 router.use("/hello", authenticateToken, require('./endpoints/hello'));
 
+router.use("/birthday", authenticateToken, require("./endpoints/bday"));
+
 router.use("/users", require("./endpoints/token"));
 
 module.exports = router;
