@@ -1,6 +1,6 @@
 const { outdated, versions } = require("../../version");
 const { request, response } = require("express");
-const { BdaySetArrays } = require("./bdayVersionFilter");
+const { nekoparaSetArrays } = require("./nekoparaVersionFilter");
 
 /**
  *
@@ -10,7 +10,7 @@ const { BdaySetArrays } = require("./bdayVersionFilter");
  * @returns
  */
 
-async function bdayGet(version, req, res) {
+async function nekoparaGet(version, req, res) {
   if (outdated.includes(version))
     return res
       .status(400)
@@ -41,12 +41,12 @@ async function bdayGet(version, req, res) {
   }
 
   versionArray.forEach((v) => {
-    BdaySetArrays(textarray, imagearray, v);
+    nekoparaSetArrays(imagearray, v);
   });
-  const index = Math.floor(Math.random() * (textarray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
+  //const index = Math.floor(Math.random() * (textarray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
   const index2 = Math.floor(Math.random() * (imagearray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
 
-  res.send({ text: textarray[index], imageURL: imagearray[index2] });
+  res.send({ imageURL: imagearray[index2] });
 }
 
-module.exports = bdayGet;
+module.exports = nekoparaGet;
