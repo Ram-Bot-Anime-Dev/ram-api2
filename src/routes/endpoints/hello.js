@@ -1,5 +1,5 @@
 const helloGet = require("../../../Requirerments/functions/Hello/helloGet");
-const { latest, versions } = require("../../../Requirerments/version");
+const { latest, versions, ALLVersions } = require("../../../Requirerments/version");
 
 const router = require("express").Router();
 var { expressjwt: jwt } = require("express-jwt");
@@ -35,7 +35,7 @@ router.get("/", async (req, res) => {
 
     if (!versionOverride) versionOverride = latest; // if the versionOverride is not provided it changes it to the latest I will test it
 
-    if (!versions.includes(versionOverride)) return res.status(400).send({ error: "The version you asked to use is not available or is not supported (check docs for supported urls)" })
+    if (!ALLVersions.includes(versionOverride)) return res.status(400).send({ error: "The version you asked to use is not available or is not supported (check docs for supported urls)" })
 
     helloGet(versionOverride, req, res);
 

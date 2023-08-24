@@ -1,53 +1,52 @@
-const { outdated } = require("../../version");
-const { request, response } = require('express');
+const { outdated, versions } = require("../../version");
+const { request, response } = require("express");
+const { BdaySetArrays } = require("./bdayVersionFilter");
 
 /**
- * 
- * @param {String} version 
- * @param {request} req 
- * @param {response} res 
- * @returns 
+ *
+ * @param {String} version
+ * @param {request} req
+ * @param {response} res
+ * @returns
  */
 
 async function helloGet(version, req, res) {
-    if (outdated.includes(version)) return res.status(400).send({ error: `${version} is outdated and no longer works` });
+  if (outdated.includes(version))
+    return res
+      .status(400)
+      .send({ error: `${version} is outdated and no longer works` });
 
-    if (version.startsWith('v')) version = version.replace("v", ""); // makes it a number string ex: "1"
-    let textarray = []; //the array
-    let imagearray = [];
+  if (version.startsWith("v")) version = version.replace("v", ""); // makes it a number string ex: "1"
+  let textarray = []; //the array
+  let imagearray = [];
 
-    //! newer updates will contain the same code just new items in each array
+  //! newer updates will contain the same code just new items in each array
 
-    switch (version) { // uses the proper version
-        case "1": 
-            let textupdateArray = [
-                `Wishing you the best birthday ever!`,
-                `Wishing you the best birthday ever!`,
-                `Happy Birthday, Hope your birthday is amazing!`,
-                "Happy Birthday!",
-            ];
-            let imageupdateArray = [
-                "https://rambot.xyz/ram-api2-images/bday/bday1.gif",
-                "https://rambot.xyz/ram-api2-images/bday/bday2.gif",
-                "https://rambot.xyz/ram-api2-images/bday/bday3.gif",
-                "https://rambot.xyz/ram-api2-images/bday/bday4.gif"
+  let versionArray = [];
 
-            ];
+  if (version >= 1) {
+    i = 0;
 
+    versions.forEach((version2) => {
+      i++;
+      if ("v" + i.toString() === version2) {
+        if (i.toString() <= version) {
+          if (!outdated.includes("v" + i.toString())) {
+            versionArray.push(i.toString());
+          }
+        }
+      } else {
+      }
+    });
+  }
 
-            textupdateArray.forEach(item => {
-                textarray.push(item);
-            })
-            imageupdateArray.forEach(item => {
-                imagearray.push(item);
-            })
+  versionArray.forEach((v) => {
+    BdaySetArrays(textarray, imagearray, v);
+  });
+  const index = Math.floor(Math.random() * (textarray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
+  const index2 = Math.floor(Math.random() * (imagearray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
 
-        break;
-    }
-    const index = Math.floor(Math.random() * (textarray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
-    const index2 = Math.floor(Math.random() * (imagearray.length - 1) + 1); // generates a random number between 1 and the length of the activities array list (in this case 5).
-
-    res.send({ text: textarray[index], imageURL: imagearray[index2] });
+  res.send({ text: textarray[index], imageURL: imagearray[index2] });
 }
 
-module.exports = helloGet
+module.exports = helloGet;
