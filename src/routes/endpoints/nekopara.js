@@ -30,6 +30,12 @@ let version = latest;
  *     responses:
  *       200:
  *         description: random answer.
+ *       403:
+ *         description: No token provided.
+ *       400:
+ *         description: The version you asked to use is not available or is not supported (check docs for supported urls)
+ *       415:
+ *         description: The version you asked to use is outdated and no longer works
  */
 
 router.get("/", async (req, res) => {

@@ -13,7 +13,7 @@ const { BdaySetArrays } = require("./bdayVersionFilter");
 async function bdayGet(version, req, res) {
   if (outdated.includes(version))
     return res
-      .status(400)
+      .status(415)
       .send({ error: `${version} is outdated and no longer works` });
 
   if (version.startsWith("v")) version = version.replace("v", ""); // makes it a number string ex: "1"

@@ -1,5 +1,9 @@
 const helloGet = require("../../../Requirerments/functions/Hello/helloGet");
-const { latest, versions, ALLVersions } = require("../../../Requirerments/version");
+const {
+  latest,
+  versions,
+  ALLVersions,
+} = require("../../../Requirerments/version");
 
 const router = require("express").Router();
 var { expressjwt: jwt } = require("express-jwt");
@@ -26,19 +30,27 @@ let version = latest;
  *     responses:
  *       200:
  *         description: random answer.
+ *       403:
+ *         description: No token provided.
+ *       400:
+ *         description: The version you asked to use is not available or is not supported (check docs for supported urls)
+ *       415:
+ *         description: The version you asked to use is outdated and no longer works
  */
 
-
 router.get("/", async (req, res) => {
-    //if (!req.authInfo.admin) return res.status(401).send({ error: "Not authorized" });
-    let { versionOverride } = req.query;
+  //if (!req.authInfo.admin) return res.status(401).send({ error: "Not authorized" });
+  let { versionOverride } = req.query;
 
-    if (!versionOverride) versionOverride = latest; // if the versionOverride is not provided it changes it to the latest I will test it
+  if (!versionOverride) versionOverride = latest; // if the versionOverride is not provided it changes it to the latest I will test it
 
-    if (!ALLVersions.includes(versionOverride)) return res.status(400).send({ error: "The version you asked to use is not available or is not supported (check docs for supported urls)" })
+  if (!ALLVersions.includes(versionOverride))
+    return res.status(400).send({
+      error:
+        "The version you asked to use is not available or is not supported (check docs for supported urls)",
+    });
 
-    helloGet(versionOverride, req, res);
-
-})
+  helloGet(versionOverride, req, res);
+});
 
 module.exports = router;
