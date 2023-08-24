@@ -8,6 +8,6 @@ router.use("/birthday", authenticateToken, require("./endpoints/bday"));
 
 router.use("/users", require("./endpoints/token"));
 
-router.use("/nekopara", require("./endpoints/nekopara"));
+router.use("/nekopara", authenticateToken, require("./endpoints/nekopara"));
 
 module.exports = router;
