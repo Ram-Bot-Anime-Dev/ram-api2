@@ -31,7 +31,7 @@ function authenticateToken(req, res, next) {
         next()
     }).catch(err => {
         console.log(err)
-        res.sendStatus(403);
+        res.status(403).send({error: "Token invalid or not provided"});
     })
 }
 

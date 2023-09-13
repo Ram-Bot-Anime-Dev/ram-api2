@@ -41,15 +41,24 @@ router.post("/signup", async (req, res) => {
 
     if (!email || !password) return res.status(400).send({ error: 'email and pass missing in body {"email": "email@email.com", "password": "Password1234!"}' })
 
-    apikeys.User.create({
-        email,
-        password: bcrypt.hashSync(password, 10),
-    }).then((user) => {
-        const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "30d" });
-        res.json({ success: true, token, Notice: "Token expire after 30 days!" });
-    }).catch(err => {
-        res.json({ success: false, error: err });
+    apikeys.User.findOne({ email: `${email}`.toLowerCase() }).then((user) => {
+        console.log(user)
+        if(!user) {
+            apikeys.User.create({
+                email,
+                password: bcrypt.hashSync(password, 10),
+            }).then((user) => {
+                const token = jwt.sign({ id: user._id, email: user.email }, process.env.se, { expiresIn: "30d" });
+                res.json({ success: true, token, Notice: "Token expire after 30 days!" });
+            }).catch(err => {
+                res.json({ success: false, error: err });
+            })
+        } else {
+            res.status(400).send({error: 'User exsists'})
+        }
     })
+
+    
 })
 
 /**
@@ -86,9 +95,14 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
     let { email, password, account } = req.body;
 
-    if (!email || !password) return res.status(400).send({ error: 'email and pass missing in body {"email": "email@email.com", "password": "Password1234!"}' })
+    
 
-    apikeys.User.findOne({ email }).then((user) => {
+    if (!email || !password) return res.status(400).send({ error: 'email and pass missing in body {"email": "email@email.com", "password": "Password1234!"}' })
+    
+
+    apikeys.User.findOne({ email: `${email}`.toLowerCase() }).then((user) => {
+        
+
         if (!user) {
             res.json({ success: false, error: "User never signed up" });
 
